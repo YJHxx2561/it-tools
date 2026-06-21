@@ -241,35 +241,78 @@ Then navigate to http://localhost:8080/it-tools/
 
 ## 部署到 Cloudflare Pages
 
-### 方法一：使用 Cloudflare Pages 仪表板
+### 推荐方法：通过 Cloudflare 连接 GitHub 仓库（自动部署）
 
-1. **构建项目**
-   ```bash
-   pnpm install --ignore-scripts
-   pnpm build
-   ```
+这是最简单的部署方式，Cloudflare 会自动连接您的 GitHub 仓库，每次推送代码时自动构建和部署。
 
-2. **访问 Cloudflare 仪表板**
-   - 访问 https://dash.cloudflare.com/
-   - 导航到 **Workers & Pages** > **Pages**
+#### 步骤 1：准备 GitHub 仓库
 
-3. **创建新项目**
-   - 点击 **Create a project**
-   - 选择 **Direct Upload**
-   - 拖放 `dist` 文件夹的内容，或点击浏览选择文件
+确保您的项目已推送到 GitHub 仓库：
 
-4. **配置项目设置**
-   - 设置 **Project name**（将用于 URL：`https://<project-name>.pages.dev`）
-   - 在 **Build settings** 下设置：
-     - **Build command**：留空（我们已经在本地构建了项目）
-     - **Build output directory**：`dist`
-   - 在 **Environment variables** 下添加所需的环境变量（可选）
+```bash
+git remote add origin https://github.com/<your-username>/<your-repo>.git
+git branch -M main
+git push -u origin main
+```
 
-5. **部署**
-   - 点击 **Deploy site**
-   - 您的网站将在 `https://<project-name>.pages.dev` 上线
+#### 步骤 2：创建 Cloudflare Pages 项目
 
-### 方法二：使用 Wrangler CLI
+1. 访问 https://dash.cloudflare.com/
+2. 导航到 **Workers & Pages** > **Pages**
+3. 点击 **Create a project**
+4. 选择 **Connect to Git**
+
+#### 步骤 3：连接 GitHub 仓库
+
+1. 选择您的 GitHub 账户
+2. 在仓库列表中找到并选择 `it-tools` 仓库
+3. 点击 **Begin setup**
+
+#### 步骤 4：配置构建和部署设置
+
+在 **Build settings** 页面，配置以下内容：
+
+| 设置项 | 值 | 说明 |
+|--------|-----|------|
+| **Production branch** | `main` | 生产环境分支 |
+| **Build command** | `pnpm install --ignore-scripts && pnpm build` | 安装依赖并构建项目 |
+| **Build output directory** | `dist` | 构建产物输出目录 |
+| **Root directory** | `.` | 项目根目录 |
+| **Environment** | `Node.js` | 运行环境 |
+| **Node.js version** | `20` | Node.js 版本 |
+
+#### 步骤 5：配置环境变量（可选）
+
+如果需要设置环境变量，在 **Environment variables** 下添加：
+
+| 变量名 | 值 | 说明 |
+|--------|-----|------|
+| `BASE_URL` | `/` | 站点基础路径 |
+| `VITE_AVAILABLE_LOCALES` | `*` | 可用语言（`*` 表示全部） |
+
+#### 步骤 6：开始部署
+
+点击 **Save and Deploy**，Cloudflare 会：
+1. 自动拉取 GitHub 仓库代码
+2. 执行构建命令 `pnpm install --ignore-scripts && pnpm build`
+3. 将 `dist` 目录的内容部署到 Cloudflare Pages
+
+部署完成后，您的网站将在 `https://<project-name>.pages.dev` 上线。
+
+#### 步骤 7：配置自定义域名（可选）
+
+1. 在 Cloudflare Pages 项目中，点击 **Custom domains**
+2. 点击 **Add custom domain**
+3. 输入您的域名（如 `tools.example.com`）
+4. 按照提示在域名注册商处配置 DNS 记录
+
+---
+
+### 其他部署方法
+
+#### 方法二：使用 Wrangler CLI 直接部署
+
+如果您已在本地构建好项目，可以使用 Wrangler CLI 直接部署：
 
 1. **安装 Wrangler**
    ```bash
@@ -292,74 +335,98 @@ Then navigate to http://localhost:8080/it-tools/
    wrangler pages deploy dist --project-name=<your-project-name>
    ```
 
-### 方法三：使用 GitHub Actions（自动部署）
+#### 方法三：使用 GitHub Actions 部署
 
-1. **创建 GitHub Actions 工作流文件**，路径为 `.github/workflows/cloudflare-pages.yml`：
+如果您希望通过 GitHub Actions 控制部署流程，可以创建以下工作流文件：
 
-   ```yaml
-   name: Deploy to Cloudflare Pages
+创建 `.github/workflows/cloudflare-pages.yml`：
 
-   on:
-     push:
-       branches:
-         - main
+```yaml
+name: Deploy to Cloudflare Pages
 
-   jobs:
-     deploy:
-       runs-on: ubuntu-latest
-       steps:
-         - name: Checkout repository
-           uses: actions/checkout@v4
+on:
+  push:
+    branches:
+      - main
 
-         - name: Install pnpm
-           uses: pnpm/action-setup@v3
-           with:
-             version: 9
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-         - name: Install Node.js
-           uses: actions/setup-node@v4
-           with:
-             node-version: 20
-             cache: 'pnpm'
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
 
-         - name: Install dependencies
-           run: pnpm install --ignore-scripts
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
 
-         - name: Build project
-           run: pnpm build
+      - name: Install dependencies
+        run: pnpm install --ignore-scripts
 
-         - name: Deploy to Cloudflare Pages
-           uses: cloudflare/pages-action@v1
-           with:
-             apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-             accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-             projectName: <your-project-name>
-             directory: dist
-   ```
+      - name: Build project
+        run: pnpm build
 
-2. **添加 Cloudflare Secrets 到 GitHub**
-   - 前往您的 GitHub 仓库 > **Settings** > **Secrets and variables** > **Actions**
-   - 添加以下 Secrets：
-     - `CLOUDFLARE_API_TOKEN`：您的 Cloudflare API Token（需要 Pages:Edit 权限）
-     - `CLOUDFLARE_ACCOUNT_ID`：您的 Cloudflare 账户 ID
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: <your-project-name>
+          directory: dist
+```
 
-3. **获取 Cloudflare API Token**
-   - 前往 https://dash.cloudflare.com/profile/api-tokens
-   - 点击 **Create Token**
-   - 选择 **Edit Cloudflare Pages** 模板
-   - 设置 Token 权限并点击 **Continue to summary**
-   - 复制生成的 Token
+然后在 GitHub 仓库的 **Settings** > **Secrets and variables** > **Actions** 中添加：
+- `CLOUDFLARE_API_TOKEN`：您的 Cloudflare API Token
+- `CLOUDFLARE_ACCOUNT_ID`：您的 Cloudflare 账户 ID
 
-4. **获取 Cloudflare Account ID**
-   - 前往 https://dash.cloudflare.com/
-   - 账户 ID 显示在 URL 中：`https://dash.cloudflare.com/<account-id>`
+---
+
+### 构建配置说明
+
+#### 构建命令详解
+
+```bash
+pnpm install --ignore-scripts && pnpm build
+```
+
+- `pnpm install --ignore-scripts`：安装所有依赖，跳过脚本执行（避免不必要的构建步骤）
+- `pnpm build`：执行 `package.json` 中的 `build` 脚本，即 `vue-tsc --noEmit && . ./set_node_mem.sh && vite build`
+  - `vue-tsc --noEmit`：TypeScript 类型检查
+  - `. ./set_node_mem.sh`：设置 Node.js 内存限制
+  - `vite build`：使用 Vite 构建项目，输出到 `dist` 目录
+
+#### 输出目录
+
+构建完成后，所有静态资源会输出到 `dist` 目录，包括：
+- `index.html`：入口 HTML 文件
+- `assets/`：JavaScript、CSS 和静态资源文件
+- `locales/`：多语言配置文件
+- `favicon-*.png`：网站图标
+
+#### 环境变量说明
+
+| 变量名 | 默认值 | 说明 |
+|--------|--------|------|
+| `BASE_URL` | `/` | 站点基础路径，用于非根域名部署 |
+| `VITE_AVAILABLE_LOCALES` | `*` | 可用语言列表，`*` 或 `all` 表示全部语言 |
+| `VERCEL` | 无 | 设置后会调整构建配置以适配 Vercel 环境 |
+
+---
 
 ### 重要注意事项
 
-- **自定义域名**：部署后，您可以在 Cloudflare Pages 仪表板的 **Custom domains** 下添加自定义域名
-- **环境变量**：您可以在 Cloudflare Pages 仪表板的 **Settings** > **Environment variables** 下设置环境变量
-- **构建命令**：如果希望 Cloudflare 自动构建项目，将构建命令设置为 `pnpm build`（Cloudflare Pages 默认支持 pnpm）
-- **预览部署**：Cloudflare Pages 会自动为 Pull Request 创建预览部署
+- **预览部署**：Cloudflare Pages 会自动为 Pull Request 创建预览部署，方便您在合并前查看效果
+- **构建日志**：可以在 Cloudflare Pages 仪表板的 **Deployments** 标签中查看构建日志，排查构建失败问题
+- **缓存策略**：Cloudflare Pages 默认会缓存静态资源，新版本部署后可能需要清除浏览器缓存
+- **SSL 证书**：Cloudflare Pages 会自动为您的站点配置免费的 SSL 证书
+- **自定义 404 页面**：可以在项目中创建 `src/404.vue` 来自定义 404 页面
 
 ## To add authentication
 
