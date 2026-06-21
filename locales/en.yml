@@ -3088,6 +3088,37 @@ tools:
       title-drag-and-drop-an-image-here-or-click-to-select-a-file: Drag and drop an image here, or click to select a file
       tag-posterize: Posterize?
       tag-potrace-result: Potrace result
+      button-trace: Trace
+      minimum-angle-displacement-in-degrees-to-be-considered-a-cutting-point-between-curves: >-
+        Minimum Angle Displacement (in degrees) to be considered a cutting point
+        between curves
+      splice-threshold-more-accurate: 'Splice Threshold (More accurate):'
+      perform-iterative-subdivide-smooth-until-all-segments-are-shorter-than-this-length: >-
+        Perform Iterative Subdivide Smooth until all segments are shorter than
+        this length
+      length-threshold-more-coarse: 'Length Threshold (More coarse):'
+      minimum-momentary-angle-in-degrees-to-be-considered-a-corner-to-be-kept-after-smoothing: >-
+        Minimum Momentary Angle (in degrees) to be considered a corner (to be
+        kept after smoothing)
+      corner-threshold-smoother: 'Corner Threshold (Smoother):'
+      layer-difference: 'Layer Difference:'
+      number-of-significant-bits-to-use-in-a-rgb-channel: Number of significant bits to use in a RGB channel
+      color-precision-more-accurate: 'Color Precision (More accurate):'
+      color-difference-between-gradient-layers: Color difference between gradient layers
+      gradient-step-less-layers: 'Gradient Step (Less layers):'
+      discard-patches-small-than-x-px-in-size: Discard patches small than X px in size
+      filter-speckle-cleaner: 'Filter Speckle (Cleaner):'
+      hierarchical-mode: 'Hierarchical Mode:'
+      curve-fitting: 'Curve Fitting:'
+      color-vtracer: Color (VTracer)
+      color-potrace: Color (Potrace)
+      bw: BW
+      interpolate: Interpolate?
+      pixel: Pixel
+      polygon: Polygon
+      spline: Spline
+      stacked: Stacked
+      cutout: Cutout
   power-converter:
     title: Power Converter
     description: Convert values between power units
@@ -5269,6 +5300,8 @@ tools:
   meta-tag-generator:
     texts:
       label-your-meta-tags: Your meta tags
+      isbn: ISBN
+      book: Book
     article:
       text:
         tag-words-associated-with-this-article: Tag words associated with this article...
@@ -5352,6 +5385,7 @@ tools:
         summary-with-large-image: Summary with large image
         summary: Summary
         twitter: Twitter
+        the-name-of-the-twitter-account-of-the-creator-ex-cthmsst: The name of the Twitter account of the creator (ex{':'} {'@'}cthmsst)...
     videoEpisode:
       text:
         which-series-this-episode-belongs-to: Which series this episode belongs to...
@@ -5372,6 +5406,50 @@ tools:
     videoOther:
       text:
         other-video-details: Other video details
+    website:
+      text:
+        article: Article
+        profile: Profile
+        song: Song
+        book: Book
+        music: Music
+        music-0: Music
+        music-album: Music album
+        playlist: Playlist
+        radio-station: Radio station
+        video: Video
+        video-0: Video
+        movie: Movie
+        episode: Episode
+        tv-show: TV Show
+        other-video: Other video
+        general-information: General Information
+        page-type: Page type
+        select-the-type-of-your-website: Select the type of your website...
+        enter-the-title-of-your-website: Enter the title of your website...
+        enter-the-description-of-your-website: Enter the description of your website...
+        page-url: Page URL
+        enter-the-url-of-your-website: Enter the url of your website...
+    ies-lighting-guidelines:
+      texts:
+        tag-application: Application
+    videoTVShow:
+      text:
+        tv-show-details: TV show details
+    basic-auth-generator:
+      username: Enter the username of the person...
+    qr-code-generator:
+      texts:
+        title-image: Image
+    qr-contact-info-generator:
+      texts:
+        label-website: Website
+    xslt-tester:
+      texts:
+        tag-title: Title
+    ical-generator:
+      texts:
+        label-description: Description
   regex-tester:
     title: Regex Tester
     description: Test your regular expressions with sample text.

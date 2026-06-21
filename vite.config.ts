@@ -19,6 +19,8 @@ import Icons from 'unplugin-icons/vite';
 import IconsResolver from 'unplugin-icons/resolver';
 import VueI18n from '@intlify/unplugin-vue-i18n/vite';
 
+import { visualizer } from 'rollup-plugin-visualizer';
+
 const baseUrl = process.env.BASE_URL || '/';
 
 const VITE_AVAILABLE_LOCALES = process.env.VITE_AVAILABLE_LOCALES;
@@ -130,6 +132,7 @@ export default defineConfig({
       logoSrc: 'logo.svg',
       splashBg: '#383838',
     }),
+    visualizer(),
   ],
   base: baseUrl,
   resolve: {
