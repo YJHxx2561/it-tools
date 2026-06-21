@@ -7,9 +7,7 @@ import { LoadingPlugin } from 'vue-loading-overlay';
 
 import { installAbortSignalPolyfill } from 'abort-signal-polyfill';
 
-import { registerSW } from 'virtual:pwa-register';
 import shadow from 'vue-shadow-dom';
-import { hideSplashScreen } from 'vite-plugin-splash-screen/runtime';
 import { plausible } from './plugins/plausible.plugin';
 import '@/utils/json5-bigint';
 import '@/utils/json5-bignum';
@@ -33,8 +31,6 @@ window.addEventListener('vite:preloadError', (event: Event) => {
 installAbortSignalPolyfill();
 
 library.add(fas);
-
-registerSW();
 
 const app = createApp(App);
 
@@ -60,5 +56,3 @@ app.use(shadow);
 app.use(store, 'pomodoro-store');
 
 app.mount('#app');
-
-hideSplashScreen();
