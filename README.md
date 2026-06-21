@@ -275,26 +275,26 @@ git push -u origin main
 | 设置项 | 值 | 说明 |
 |--------|-----|------|
 | **Production branch** | `main` | 生产环境分支 |
-| **Build command** | `pnpm install --ignore-scripts && pnpm build` | 安装依赖并构建项目 |
+| **Build command** | `pnpm install --ignore-scripts && pnpm build:cloudflare` | 跳过类型检查，加快构建 |
 | **Build output directory** | `dist` | 构建产物输出目录 |
 | **Root directory** | `.` | 项目根目录 |
 | **Environment** | `Node.js` | 运行环境 |
 | **Node.js version** | `20` | Node.js 版本 |
 
-#### 步骤 5：配置环境变量（可选）
+#### 步骤 5：配置环境变量（重要）
 
-如果需要设置环境变量，在 **Environment variables** 下添加：
+在 **Environment variables** 下添加以下变量，这些设置可以显著减少构建时间和产物大小：
 
 | 变量名 | 值 | 说明 |
 |--------|-----|------|
-| `BASE_URL` | `/` | 站点基础路径 |
-| `VITE_AVAILABLE_LOCALES` | `*` | 可用语言（`*` 表示全部） |
+| `VITE_AVAILABLE_LOCALES` | `en,zh` | 只构建中文和英文语言包 |
+| `NODE_OPTIONS` | `--max-old-space-size=4096` | 增加 Node.js 内存限制 |
 
 #### 步骤 6：开始部署
 
 点击 **Save and Deploy**，Cloudflare 会：
 1. 自动拉取 GitHub 仓库代码
-2. 执行构建命令 `pnpm install --ignore-scripts && pnpm build`
+2. 执行构建命令 `pnpm install --ignore-scripts && pnpm build:cloudflare`
 3. 将 `dist` 目录的内容部署到 Cloudflare Pages
 
 部署完成后，您的网站将在 `https://<project-name>.pages.dev` 上线。
