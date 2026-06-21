@@ -4874,6 +4874,26 @@ tools:
       tag-connect: Connect
       tag-send: Send
       label-url: Url
+  cloudflare-pages-deployer:
+    title: Cloudflare Pages deployer
+    description: Deploy static files to Cloudflare Pages
+    texts:
+      title-configuration: Configuration
+      label-api-token: API Token
+      placeholder-api-token: Your Cloudflare API token
+      label-account-id: Account ID
+      placeholder-account-id: Your Cloudflare account ID
+      label-project-name: Project Name
+      placeholder-project-name: Your Cloudflare Pages project name
+      title-files: Files
+      title-drag-and-drop-files-here-or-click-to-select: Drag and drop files here, or click to select
+      tag-deploy: Deploy
+      title-error: Deployment Error
+      title-deployment-successful: Deployment Successful
+      label-deployment-id: Deployment ID
+      label-deployment-url: Deployment URL
+      tag-uploaded: Uploaded
+      tag-error: Error
   qr-code-decoder:
     title: QR Code decoder
     description: QR Code Reader

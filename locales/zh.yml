@@ -4581,6 +4581,26 @@ tools:
       tag-connect: 连接
       tag-send: 发送
       label-url: URL
+  cloudflare-pages-deployer:
+    title: Cloudflare Pages 部署工具
+    description: 将静态文件部署到 Cloudflare Pages
+    texts:
+      title-configuration: 配置
+      label-api-token: API 令牌
+      placeholder-api-token: 您的 Cloudflare API 令牌
+      label-account-id: 账户 ID
+      placeholder-account-id: 您的 Cloudflare 账户 ID
+      label-project-name: 项目名称
+      placeholder-project-name: 您的 Cloudflare Pages 项目名称
+      title-files: 文件
+      title-drag-and-drop-files-here-or-click-to-select: 拖放文件至此，或点击选择
+      tag-deploy: 部署
+      title-error: 部署错误
+      title-deployment-successful: 部署成功
+      label-deployment-id: 部署 ID
+      label-deployment-url: 部署 URL
+      tag-uploaded: 已上传
+      tag-error: 错误
   qr-code-decoder:
     title: 二维码解码器
     description: 二维码读取器

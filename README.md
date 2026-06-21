@@ -239,6 +239,128 @@ Then navigate to http://localhost:8080/it-tools/
 1. Enable GitHub Pages build and deployment option in your fork, under **Settings** > **Pages** and select **GitHub Actions** as the source
 2. Add the following GitHub action to your repo: https://github.com/sharevb/it-tools/tree/chore/all-my-stuffs/.github/workflows/sharevb-github-pages-publish.yml
 
+## 部署到 Cloudflare Pages
+
+### 方法一：使用 Cloudflare Pages 仪表板
+
+1. **构建项目**
+   ```bash
+   pnpm install --ignore-scripts
+   pnpm build
+   ```
+
+2. **访问 Cloudflare 仪表板**
+   - 访问 https://dash.cloudflare.com/
+   - 导航到 **Workers & Pages** > **Pages**
+
+3. **创建新项目**
+   - 点击 **Create a project**
+   - 选择 **Direct Upload**
+   - 拖放 `dist` 文件夹的内容，或点击浏览选择文件
+
+4. **配置项目设置**
+   - 设置 **Project name**（将用于 URL：`https://<project-name>.pages.dev`）
+   - 在 **Build settings** 下设置：
+     - **Build command**：留空（我们已经在本地构建了项目）
+     - **Build output directory**：`dist`
+   - 在 **Environment variables** 下添加所需的环境变量（可选）
+
+5. **部署**
+   - 点击 **Deploy site**
+   - 您的网站将在 `https://<project-name>.pages.dev` 上线
+
+### 方法二：使用 Wrangler CLI
+
+1. **安装 Wrangler**
+   ```bash
+   npm install -g wrangler
+   ```
+
+2. **登录 Cloudflare**
+   ```bash
+   wrangler login
+   ```
+
+3. **构建项目**
+   ```bash
+   pnpm install --ignore-scripts
+   pnpm build
+   ```
+
+4. **部署到 Cloudflare Pages**
+   ```bash
+   wrangler pages deploy dist --project-name=<your-project-name>
+   ```
+
+### 方法三：使用 GitHub Actions（自动部署）
+
+1. **创建 GitHub Actions 工作流文件**，路径为 `.github/workflows/cloudflare-pages.yml`：
+
+   ```yaml
+   name: Deploy to Cloudflare Pages
+
+   on:
+     push:
+       branches:
+         - main
+
+   jobs:
+     deploy:
+       runs-on: ubuntu-latest
+       steps:
+         - name: Checkout repository
+           uses: actions/checkout@v4
+
+         - name: Install pnpm
+           uses: pnpm/action-setup@v3
+           with:
+             version: 9
+
+         - name: Install Node.js
+           uses: actions/setup-node@v4
+           with:
+             node-version: 20
+             cache: 'pnpm'
+
+         - name: Install dependencies
+           run: pnpm install --ignore-scripts
+
+         - name: Build project
+           run: pnpm build
+
+         - name: Deploy to Cloudflare Pages
+           uses: cloudflare/pages-action@v1
+           with:
+             apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+             accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+             projectName: <your-project-name>
+             directory: dist
+   ```
+
+2. **添加 Cloudflare Secrets 到 GitHub**
+   - 前往您的 GitHub 仓库 > **Settings** > **Secrets and variables** > **Actions**
+   - 添加以下 Secrets：
+     - `CLOUDFLARE_API_TOKEN`：您的 Cloudflare API Token（需要 Pages:Edit 权限）
+     - `CLOUDFLARE_ACCOUNT_ID`：您的 Cloudflare 账户 ID
+
+3. **获取 Cloudflare API Token**
+   - 前往 https://dash.cloudflare.com/profile/api-tokens
+   - 点击 **Create Token**
+   - 选择 **Edit Cloudflare Pages** 模板
+   - 设置 Token 权限并点击 **Continue to summary**
+   - 复制生成的 Token
+
+4. **获取 Cloudflare Account ID**
+   - 前往 https://dash.cloudflare.com/
+   - 账户 ID 显示在 URL 中：`https://dash.cloudflare.com/<account-id>`
+
+### 重要注意事项
+
+- **自定义域名**：部署后，您可以在 Cloudflare Pages 仪表板的 **Custom domains** 下添加自定义域名
+- **环境变量**：您可以在 Cloudflare Pages 仪表板的 **Settings** > **Environment variables** 下设置环境变量
+- **构建命令**：如果希望 Cloudflare 自动构建项目，将构建命令设置为 `pnpm build`（Cloudflare Pages 默认支持 pnpm）
+- **预览部署**：Cloudflare Pages 会自动为 Pull Request 创建预览部署
+
 ## To add authentication
 
 Assuming you're already hosting it-tools behind a reverse proxy, you can configure forward-auth and enforce authentication from the reverse proxy
